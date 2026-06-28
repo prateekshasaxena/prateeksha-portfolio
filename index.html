@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prateeksha Saxena — PHP Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='6' y='6' width='88' height='88' rx='6' fill='%23100820'/><text x='50' y='62' text-anchor='middle' font-family='monospace' font-size='40' font-weight='700' fill='%236db3ff'>PS</text></svg>">
+  <style>
+    :root {
+      --navy: #0d1b2a;
+      --navy2: #132338;
+      --navy3: #1a2f4a;
+      --steel: #2c4a6e;
+      --accent: #4a9eff;
+      --accent2: #2979d8;
+      --gold: #c9a84c;
+      --text: #e8edf5;
+      --text2: #8fa3bd;
+      --text3: #5a7a99;
+      --border: rgba(74,158,255,0.12);
+      --border2: rgba(74,158,255,0.22);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Epilogue', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(74,158,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74,158,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    .navbar {
+      background: #0a0a0a;
+      border-bottom: 1px solid #1e1e1e;
+      padding: 0 6.5rem;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    .logo-wrap { display: flex; align-items: center; text-decoration: none; }
+    .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+    .nav-links a {
+      font-size: 13px;
+      color: #888;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-family: monospace;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #ffffff; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #888;
+      transition: all 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 68px;
+      left: 0; right: 0;
+      background: #0a0a0a;
+      border-bottom: 1px solid #1e1e1e;
+      padding: 1.5rem 2rem;
+      z-index: 998;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: monospace;
+      font-size: 14px;
+      color: #888;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .mobile-menu a:hover { color: #6db3ff; }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; padding: 7rem 6%; }
+    .container { max-width: 1080px; margin: 0 auto; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 8rem;
+    }
+    .hero-inner { max-width: 1080px; margin: 0 auto; width: 100%; }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .hero-tag::before {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: var(--accent);
+    }
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.35s;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    .hero-sub {
+      margin-top: 1.8rem;
+      font-size: 1.08rem;
+      color: var(--text2);
+      max-width: 560px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+    }
+    .hero-cta {
+      margin-top: 2.8rem;
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.65s;
+    }
+    .btn-primary {
+      padding: 0.85rem 2.2rem;
+      background: var(--accent);
+      color: var(--navy);
+      font-family: 'Epilogue', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: #6db3ff; transform: translateY(-2px); }
+    .btn-outline {
+      padding: 0.85rem 2.2rem;
+      background: transparent;
+      color: var(--text);
+      font-family: 'Epilogue', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      border: 1px solid var(--border2);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .hero-stats {
+      margin-top: 5rem;
+      display: flex;
+      gap: 3.5rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.8s;
+    }
+    .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.4rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+
+    /* ── SECTION HEADINGS ── */
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.2rem;
+    }
+    .section-label::after {
+      content: '';
+      display: block;
+      flex: 1;
+      max-width: 48px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 3.5rem;
+    }
+    h2 em { font-style: italic; color: var(--accent); }
+
+    /* ── ABOUT ── */
+    #about { background: var(--navy2); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--text2);
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .about-text p strong { color: var(--text); font-weight: 500; }
+    .about-highlights {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .highlight-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.2rem 1.4rem;
+      border: 1px solid var(--border);
+      background: rgba(74,158,255,0.03);
+      transition: border-color 0.2s;
+    }
+    .highlight-item:hover { border-color: var(--border2); }
+    .highlight-icon {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: rgba(74,158,255,0.1);
+      padding: 0.4rem 0.6rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .highlight-item h4 { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.2rem; }
+    .highlight-item p { font-size: 0.82rem; color: var(--text3); margin: 0; }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--navy); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .skill-card {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      background: var(--navy2);
+      transition: border-color 0.25s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .skill-card:hover { border-color: var(--border2); transform: translateY(-4px); }
+    .skill-card:hover::before { transform: scaleX(1); }
+    .skill-card-icon {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .skill-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.3rem 0.7rem;
+      background: rgba(74,158,255,0.08);
+      color: var(--accent);
+      border: 1px solid rgba(74,158,255,0.18);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── PROJECTS ── */
+    #projects { background: var(--navy2); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      border: 1px solid var(--border);
+      background: var(--navy);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s, transform 0.2s;
+    }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .project-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+    .project-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem;
+      margin-bottom: 0.8rem;
+      color: var(--text);
+    }
+    .project-card p {
+      font-size: 0.9rem;
+      color: var(--text2);
+      flex: 1;
+      margin-bottom: 1.5rem;
+    }
+    .project-card p a { color: var(--accent); text-decoration: none; }
+    .project-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .project-stack { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .project-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    .project-link:hover { text-decoration: underline; }
+
+    /* ── EXPERIENCE ── */
+    #experience { background: var(--navy); }
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3.5rem;
+      padding-left: 2.5rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 0.45rem;
+      width: 9px; height: 9px;
+      background: var(--accent);
+      border: 2px solid var(--navy);
+      border-radius: 50%;
+    }
+    .timeline-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-item h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.2rem;
+    }
+    .timeline-company {
+      font-size: 0.85rem;
+      color: var(--text3);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    .timeline-item ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .timeline-item ul li {
+      font-size: 0.9rem;
+      color: var(--text2);
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    .timeline-item ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 0.78rem;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--navy2);
+      text-align: center;
+    }
+    #contact h2 { margin-bottom: 1rem; }
+    .contact-sub {
+      font-size: 1rem;
+      color: var(--text2);
+      max-width: 480px;
+      margin: 0 auto 2.8rem;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1.6rem;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.06em;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      border-top: 1px solid var(--border);
+      padding: 2rem 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    footer p { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--text3); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .navbar { padding: 0 2rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      section { padding: 5rem 5%; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-stats { gap: 2rem; }
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 600px) {
+      .navbar { padding: 0 1.2rem; }
+      #hero { padding-top: 6rem; padding-left: 5%; padding-right: 5%; }
+      h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+      .hero-sub { font-size: 0.95rem; }
+      .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+      .hero-cta { flex-direction: column; }
+      .btn-primary, .btn-outline { text-align: center; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .project-footer { flex-direction: column; align-items: flex-start; }
+      .contact-links { flex-direction: column; align-items: center; }
+      .timeline { padding-left: 1.2rem; }
+      .timeline-item { padding-left: 1.5rem; }
+      .timeline-item::before { left: -1.2rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; }
+      * { animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+
+<!-- NAV -->
+<nav class="navbar">
+  <a class="logo-wrap" href="#">
+    <svg width="52" height="52" viewBox="0 0 100 100">
+      <rect x="8" y="8" width="84" height="84" rx="4" fill="none" stroke="#2a2a2a" stroke-width="1.2"/>
+      <line x1="8" y1="50" x2="92" y2="50" stroke="#6db3ff" stroke-width="0.8" opacity="0.35"/>
+      <line x1="50" y1="8" x2="50" y2="92" stroke="#6db3ff" stroke-width="0.8" opacity="0.35"/>
+      <rect x="20" y="20" width="60" height="60" rx="3" fill="#100820"/>
+      <text x="50" y="59" text-anchor="middle" font-family="'Courier New', monospace"
+        font-size="26" font-weight="700" fill="#6db3ff" letter-spacing="3">&lt;PS&gt;</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#hero" class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#hero" onclick="closeMobileMenu()">Home</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#projects" onclick="closeMobileMenu()">Projects</a>
+  <a href="#skills" onclick="closeMobileMenu()">Skills</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<body>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Backend PHP Developer · Laravel · CodeIgniter · REST APIs</div>
+    <h1>From <em>idea</em><br />to live product</h1>
+    <p class="hero-sub">Results-driven backend developer with 3+ years of experience building scalable, high-performance web applications in PHP, Laravel, and CodeIgniter — specializing in RESTful APIs, payment gateway integrations, and mobile-backend systems powering live Android applications.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">View Projects</a>
+      <a href="#contact" class="btn-outline">Get In Touch</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">3+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div>
+        <div class="stat-num">20+</div>
+        <div class="stat-label">Projects Shipped</div>
+      </div>
+      <div>
+        <div class="stat-num">20%</div>
+        <div class="stat-label">Faster Delivery</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-label">01 — About</div>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <h2>Engineer at heart,<br /><em>API specialist</em> by craft</h2>
+        <p>Hi, I'm <strong>Prateeksha Saxena</strong> — a PHP developer based in Jaipur, Rajasthan, with 3+ years of experience building secure, scalable web applications. I specialize in RESTful API development, and full-stack delivery on Laravel and CodeIgniter.</p>
+        <p>I have a track record of cutting delivery time by 20%, reducing bugs by 25%, and driving measurable business growth across fintech, e-commerce, and SaaS platforms.</p>
+        <p>When I'm not writing code, I'm exploring new API ecosystems, optimizing MySQL databases, or fine-tuning payment flows for reliability and security.</p>
+      </div>
+      <div class="about-highlights reveal">
+        <div class="highlight-item">
+          <span class="highlight-icon">PAY</span>
+          <div>
+            <h4>Fintech & Payment Integrations</h4>
+            <p>Razorpay, Payment Gateway, MobiKwik API, BBPS (Recharge/Utility), e-Mitra — architecting secure payment flows.</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <span class="highlight-icon">API</span>
+          <div>
+            <h4>RESTful API Development</h4>
+            <p>Designing and optimizing APIs for high-traffic mobile applications with systematic Postman testing.</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <span class="highlight-icon">DB</span>
+          <div>
+            <h4>Database Optimization</h4>
+            <p>MySQL schema design, SQL optimization, indexing strategies for high-performance systems.</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <span class="highlight-icon">APP</span>
+          <div>
+            <h4>Mobile API Engineering</h4>
+            <p>RESTful APIs powering live Android apps on Google Play — real-time sync, role-based access, push notification pipelines.</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <span class="highlight-icon">SMS</span>
+          <div>
+            <h4>Notification Pipelines</h4>
+            <p>Automated Email, SMS, and OTP notification systems to drive user engagement.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-label">02 — Skills</div>
+    <h2>Technical <em>expertise</em></h2>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">Core</div>
+        <h3>Core Tech</h3>
+        <div class="skill-tags">
+          <span class="tag">PHP 7.x/8.x</span>
+          <span class="tag">Laravel</span>
+          <span class="tag">CodeIgniter</span>
+          <span class="tag">MVC Architecture</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">Fintech</div>
+        <h3>Fintech & Integrations</h3>
+        <div class="skill-tags">
+          <span class="tag">Razorpay</span>
+          <span class="tag">Payment Gateway</span>
+          <span class="tag">MobiKwik API</span>
+          <span class="tag">SMS/OTP/EMAIL APIs</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">DB</div>
+        <h3>Database & Backend</h3>
+        <div class="skill-tags">
+          <span class="tag">MySQL</span>
+          <span class="tag">SQL Optimization</span>
+          <span class="tag">Indexing</span>
+          <span class="tag">RESTful APIs</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">Front</div>
+        <h3>Frontend & Tools</h3>
+        <div class="skill-tags">
+          <span class="tag">JavaScript</span>
+          <span class="tag">jQuery</span>
+          <span class="tag">Ajax</span>
+          <span class="tag">HTML5</span>
+          <span class="tag">CSS3</span>
+          <span class="tag">Bootstrap</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">Tools</div>
+        <h3>Dev Tools</h3>
+        <div class="skill-tags">
+          <span class="tag">Postman</span>
+          <span class="tag">Git</span>
+          <span class="tag">dompdf</span>
+          <span class="tag">Blade Templating</span>
+          <span class="tag">Eloquent ORM</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">Arch</div>
+        <h3>Architecture</h3>
+        <div class="skill-tags">
+          <span class="tag">API Polling</span>
+          <span class="tag">CSRF Protection</span>
+          <span class="tag">Role-Based Auth</span>
+          <span class="tag">Full-Stack</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label">03 — Projects</div>
+    <h2>Selected <em>work</em></h2>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-num">001</div>
+        <h3>Anand Atelier Associates — Architecture & Interior Design Platform</h3>
+        <p>Built the complete website for <a href="https://anandatelierassociate.com/" target="_blank">Anand Atelier Associates</a> — a premier architecture and interior design firm with 16+ years of service, 100+ successful projects, 2 lakh+ sq. ft. area covered, and 6+ international country collaborations. Developed a dynamic project showcase with category filtering, a blog & publication system, awards & recognition section, team profiles, career portal, and a newsletter subscription system. Built a secure role-based admin panel with full CRUD for all content managed via Laravel Eloquent ORM.</p>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="tag">Laravel</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">Bootstrap</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Admin Panel</span>
+            <span class="tag">Email Api</span>
+          </div>
+          <a href="https://anandatelierassociate.com/" target="_blank" class="project-link">View →</a>
+        </div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-num">002</div>
+        <h3>Safeon Power Purifier — Corporate & E-Commerce Website</h3>
+        <p>Designed and developed the complete corporate website and e-commerce platform for <a href="https://safeonpower.com/" target="_blank">Safeon Power Purifier</a> by Punto Corporation Pvt. Ltd. — a patented electrical safety device company (Patent No. 386617) incubated at MNIT Jaipur, with 2,500+ installations across 8+ states in India. Integrated Razorpay with real-time webhook handling and automated invoice generation.</p>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="tag">CodeIgniter</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">Razorpay</span>
+            <span class="tag">E-Commerce</span>
+            <span class="tag">SMS APIs</span>
+            <span class="tag">Admin Panel</span>
+          </div>
+          <a href="https://safeonpower.com/" target="_blank" class="project-link">View →</a>
+        </div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-num">003</div>
+        <h3>SafeOn — Admin, Employee & Client Management Platform</h3>
+        <p>Built the complete operational backbone for Safeon Power Purifier — managing the full business lifecycle of 2,500+ installed units across 8+ states. Developed a multi-role web admin panel covering admin, employee, and client management with role-based access control, live order tracking, and automated reporting. Engineered RESTful APIs powering both <a href="https://play.google.com/store/apps/details?id=com.cp.safeon" target="_blank">SafeOn Biz</a> and <a href="https://play.google.com/store/apps/details?id=com.startup.safeon" target="_blank">SafeOn Power</a> Android apps including a continuous IoT data pipeline.</p>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="tag">CodeIgniter</span>
+            <span class="tag">RESTful APIs</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">Android</span>
+            <span class="tag">IoT Streaming</span>
+            <span class="tag">Push Notifications</span>
+          </div>
+          <a href="https://safeonapp.com/admin/login" target="_blank" class="project-link">View →</a>
+        </div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-num">004</div>
+        <h3>Motorcycle Trails — E-Adventure Touring Platform</h3>
+        <p>Built the full platform for <a href="https://motorcycletrails.com/" target="_blank">Motorcycle Trails</a> — a premium Royal Enfield motorcycle tour company with 17+ years of experience. Developed a dynamic tour & itinerary management system with destination-wise category filtering, a festive departures & events calendar, interactive India map, gallery, and an automated inquiry & booking system. Implemented full multi-language support (English & French) via Laravel's localisation engine — French version at <a href="https://motorcycletrails.fr/" target="_blank">motorcycletrails.fr</a>.</p>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="tag">Laravel</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">Blade</span>
+            <span class="tag">Multi-Language</span>
+            <span class="tag">Bootstrap</span>
+            <span class="tag">Email Api</span>
+          </div>
+          <a href="https://motorcycletrails.com/" target="_blank" class="project-link">View →</a>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-num">005</div>
+        <h3>Pink Pay Infotech - Digital Payment Portal</h3>
+        <p>Built the full platform for <a href="https://pinkpayinfotech.com/" target="_blank">Pinkpay Infotech</a> — Worked on specific parts of this fintech portal, which handles mobile recharges, DTH, FASTag, and utility bill payments
+for retailers and individual users. Integrated MobiKwik Fetch Pay API for wallet-based payments and operator APIs for real-time recharge status across
+telecom providers. Made changes to e-Mitra input fields to align with updated government service workflows.</p>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="tag">PHP</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">MobiKwik Fatch Pay APIs</span>
+            <span class="tag">Operator APIs</span>
+            <span class="tag">Bootstrap</span>
+            <span class="tag">e-Mitra</span>
+          </div>
+          <a href="https://pinkpayinfotech.com/" target="_blank" class="project-link">View →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="section-label">04 — Experience</div>
+    <h2>Where I've <em>worked</em></h2>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2022 — Present</div>
+        <h3>Software Developer (PHP/Laravel/CodeIgniter)</h3>
+        <div class="timeline-company">Codunite · Jaipur, Rajasthan · Full-time</div>
+        <ul>
+          <li>Built API polling and webhook systems for BBPS utility services, achieving 99% accuracy in recharge and bill payment status tracking</li>
+          <li>Designed and optimized RESTful APIs for high-traffic mobile applications, improving response reliability and cutting debugging time through systematic Postman testing</li>
+          <li>Developed automated notification pipelines (Email, SMS, OTP) that increased active user engagement by 35%</li>
+          <li>Streamlined development workflows across Laravel and CodeIgniter projects, delivering a 20% reduction in project timelines and a 15% boost in system performance</li>
+          <li>Integrated Razorpay and ICICI Payment Gateway into existing systems, handling transaction flows with automated status callbacks — supporting 100+ daily transactions</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2021 — 2022</div>
+        <h3>PHP Freelance Developer</h3>
+        <div class="timeline-company">Self-employed</div>
+        <ul>
+          <li>Built and sharpened PHP development skills during this period with self-learning and freelance project work</li>
+          <li>Worked on core PHP projects and learned advanced concepts in PHP during the COVID period when employment was limited.</li>
+          <li>Delivered small web development projects for clients independently, which helped build practical development and client handling experience before the first full-time IT role.</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2019 — 2020</div>
+        <h3>Business Analyst</h3>
+        <div class="timeline-company">First Advisor · Indore, Madhya Pradesh · Full-time</div>
+        <ul>
+          <li>Bridged communication between technical teams and clients to define and document business requirements, directly contributing to a 35% improvement in user engagement</li>
+          <li>Led stakeholder alignment sessions to translate client goals into actionable project scopes, improving requirement clarity by 25% and reducing rework cycles</li>
+          <li>Produced detailed functional specifications and process flow documentation adopted as templates across multiple projects</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-label" style="justify-content:center">05 — Contact</div>
+    <h2>Let's <em>build</em> something</h2>
+    <p class="contact-sub">Open to new opportunities, collaborations, and interesting backend challenges. Drop me a message.</p>
+    <a href="mailto:prateekshasaxena1216@gmail.com" class="btn-primary">prateekshasaxena1216@gmail.com</a>
+    <div class="contact-links">
+      <a href="https://www.linkedin.com/in/prateeksha-saxena-33a1" class="contact-link" target="_blank">LinkedIn</a>
+      <a href="tel:+918989650560" class="contact-link">+91-8989650560</a>
+      <!-- <a href="#" class="contact-link">Resume PDF</a> -->
+      <a href="https://drive.google.com/file/d/1xK0lLpk1TOwo0sWvle6WfpVXzC3e5EIo/view?usp=drive_link" target="_blank" class="contact-link">Resume PDF</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Prateeksha Saxena</p>
+  <p>Built with PHP · Laravel · MySQL · HTML · CSS · JS</p>
+</footer>
+
+</body>
+
+<script>
+  
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  function closeMobileMenu() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      if (window.scrollY >= section.offsetTop - 100) {
+        current = section.getAttribute('id');
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  });
+
+  // for counter no
+  // Counter Animation
+function animateCounter(el, target, suffix = '') {
+  let start = 0;
+  const duration = 2000;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) {
+      start = target;
+      clearInterval(timer);
+    }
+    el.textContent = Math.floor(start) + suffix;
+  }, 16);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const text = el.dataset.target;
+      const num = parseInt(text);
+      const suffix = text.replace(num.toString(), '');
+      animateCounter(el, num, suffix);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-num').forEach(el => {
+  el.dataset.target = el.textContent.trim();
+  el.textContent = '0';
+  counterObserver.observe(el);
+});
+</script>
+</html>
